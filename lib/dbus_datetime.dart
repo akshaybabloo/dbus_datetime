@@ -40,7 +40,10 @@ class DBusDateTime {
   Future<String> getCurrentTimeUTC() async {
     final nm = OrgFreedesktopTimedate1(_client, 'org.freedesktop.timedate1');
     final currentTime = await nm.getRTCTimeUSec();
-    final dateTime = DateTime.fromMicrosecondsSinceEpoch(currentTime, isUtc: true);
+    final dateTime = DateTime.fromMicrosecondsSinceEpoch(
+      currentTime,
+      isUtc: true,
+    );
     return dateTime.toIso8601String();
   }
 
@@ -50,10 +53,16 @@ class DBusDateTime {
     return nm.getNTP();
   }
 
-  /// Synchronize the time with NTP
-  Future<void> synchronizeTime() async {
+  /// Enable NTP synchronization
+  Future<void> enableNTP() async {
     final nm = OrgFreedesktopTimedate1(_client, 'org.freedesktop.timedate1');
     await nm.callSetNTP(true, false);
+  }
+
+  /// Disable NTP synchronization
+  Future<void> disableNTP() async {
+    final nm = OrgFreedesktopTimedate1(_client, 'org.freedesktop.timedate1');
+    await nm.callSetNTP(false, false);
   }
 
   /// Set the timezone
@@ -63,9 +72,12 @@ class DBusDateTime {
   }
 
   /// Set the time
-  Future<void> setTime(int time) async {
+  ///
+  /// Setting `relative` to `true` will set the time relative to the current time,
+  /// as it adds the provided time to the current time. When `false`, it sets the time to the provided value.
+  Future<void> setTime(int time, {bool relative = false}) async {
     final nm = OrgFreedesktopTimedate1(_client, 'org.freedesktop.timedate1');
-    await nm.callSetTime(time, true, false);
+    await nm.callSetTime(time, relative, false);
   }
 
   /// Set NTP server addresses
