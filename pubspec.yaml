@@ -1,0 +1,23 @@
+name: dbus_datetime
+description: A Dart library for interacting with the systemd timedate1 D-Bus interface.
+version: 0.0.1
+repository: https://github.com/akshaybabloo/dbus_datetime
+issue_tracker: https://github.com/akshaybabloo/dbus_datetime/issues
+
+topics:
+  - dbus
+  - datetime
+  - linux
+
+platforms:
+  linux:
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  dbus: ^0.7.11
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.24.0
