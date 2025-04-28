@@ -16,3 +16,5 @@ list:
 generate:
     dart pub global activate dbus
     dart-dbus generate-remote-object ./interfaces/org.freedesktop.timedate1.xml -o lib/interfaces/timedate1_remote_object.dart
+    dart-dbus generate-remote-object ./interfaces/org.freedesktop.timesync1.xml -o lib/interfaces/timesync1_remote_object.dart
+

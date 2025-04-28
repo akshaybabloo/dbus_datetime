@@ -1,6 +1,8 @@
 import 'package:dbus/dbus.dart';
 import 'package:dbus_datetime/interfaces/timedate1_remote_object.dart';
 
+import 'interfaces/timesync1_remote_object.dart';
+
 /// A class to interact with the system's date and time settings using D-Bus.
 class DBusDateTime {
   final DBusClient _client;
@@ -38,10 +40,7 @@ class DBusDateTime {
   Future<String> getCurrentTimeUTC() async {
     final nm = OrgFreedesktopTimedate1(_client, 'org.freedesktop.timedate1');
     final currentTime = await nm.getRTCTimeUSec();
-    final dateTime = DateTime.fromMicrosecondsSinceEpoch(
-      currentTime,
-      isUtc: true,
-    );
+    final dateTime = DateTime.fromMicrosecondsSinceEpoch(currentTime, isUtc: true);
     return dateTime.toIso8601String();
   }
 
@@ -67,6 +66,12 @@ class DBusDateTime {
   Future<void> setTime(int time) async {
     final nm = OrgFreedesktopTimedate1(_client, 'org.freedesktop.timedate1');
     await nm.callSetTime(time, true, false);
+  }
+
+  /// Set NTP server addresses
+  Future<void> setNTPServers(List<String> url) async {
+    final nm = OrgFreedesktopTimesync1(_client, 'org.freedesktop.timesync1');
+    await nm.callSetRuntimeNTPServers(url);
   }
 
   /// Closes the D-Bus client connection

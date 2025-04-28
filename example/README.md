@@ -36,6 +36,9 @@ void main() async {
 
   // Modify system settings (requires root privileges)
   try {
+    // Set NTP server
+    await dbusDateTime.setNTPServers(['pool.ntp.org']);
+
     // Set the timezone
     await dbusDateTime.setTimezone('America/New_York');
     print('Timezone set to America/New_York');

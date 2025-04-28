@@ -9,6 +9,7 @@
 - Retrieve the current time in various formats (microseconds, ISO 8601, UTC).
 - Check and enable NTP synchronization.
 - Set the system timezone and time.
+- Set NTP servers for synchronization.
 
 ## Installation
 
