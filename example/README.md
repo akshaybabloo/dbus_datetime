@@ -49,7 +49,7 @@ void main() async {
     print('System time set to 2025-04-15 12:00:00');
 
     // Enable NTP synchronization
-    await dbusDateTime.synchronizeTime();
+    await dbusDateTime.enableNTP();
     print('NTP synchronization enabled');
   } catch (e) {
     print('Error modifying system settings: $e');
