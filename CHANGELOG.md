@@ -1,3 +1,7 @@
+## 0.0.4
+
+- Fix example code in example/README.md.
+
 ## 0.0.3
 
 - Added two methods to enable and disable NTP synchronisation.
