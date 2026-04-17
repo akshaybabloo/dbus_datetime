@@ -10,6 +10,7 @@
 - Check and enable NTP synchronization.
 - Set the system timezone and time.
 - Set NTP servers for synchronization.
+- Offline country-to-timezone lookup via `ZoneTab`.
 
 ## Installation
 
@@ -58,6 +59,32 @@ void main() async {
   await dbusDateTime.close();
 }
 ```
+
+## Country and Timezone Lookup
+
+systemd-timedated does not expose country metadata over D-Bus, so building a country picker on top of `getAvailableTimezones()` is awkward. The `ZoneTab` helper fills that gap by parsing the tzdata files shipped with every Linux distribution (`/usr/share/zoneinfo/zone1970.tab`, falling back to `zone.tab`, plus `iso3166.tab`).
+
+```dart
+import 'package:dbus_datetime/dbus_datetime.dart';
+
+void main() async {
+  final zoneTab = ZoneTab();
+
+  // ISO 3166 alpha-2 code -> human-readable country name.
+  final countries = await zoneTab.getCountries();
+  print(countries['NZ']); // New Zealand
+
+  // Timezones for a given country.
+  final zones = await zoneTab.timezonesForCountry('NZ');
+  print(zones); // [Pacific/Auckland, Pacific/Chatham]
+
+  // Pre-select a country from the current system timezone.
+  final codes = await zoneTab.countriesForTimezone('Europe/Zurich');
+  print(codes); // [CH, DE, LI]
+}
+```
+
+`ZoneTab` is backed by files, not D-Bus. It is purely offline and adds no runtime dependencies. Pass `zoneinfoDir:` to the constructor to point at a different directory (useful in tests).
 
 ## License
 
