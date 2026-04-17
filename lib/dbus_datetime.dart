@@ -3,6 +3,8 @@ import 'package:dbus_datetime/interfaces/timedate1_remote_object.dart';
 
 import 'interfaces/timesync1_remote_object.dart';
 
+export 'zone_tab.dart';
+
 /// A class to interact with the system's date and time settings using D-Bus.
 class DBusDateTime {
   final DBusClient _client;
