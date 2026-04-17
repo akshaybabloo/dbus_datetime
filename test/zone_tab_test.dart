@@ -16,7 +16,7 @@ void main() {
       expect(countries['NZ'], 'New Zealand');
       expect(countries['US'], 'United States');
       expect(countries['CH'], 'Switzerland');
-      expect(countries, hasLength(5));
+      expect(countries, hasLength(6));
     });
 
     test('getCountryTimezones maps single-zone country', () async {
@@ -51,11 +51,20 @@ void main() {
       expect(await zoneTab.timezonesForCountry('ZZ'), isEmpty);
     });
 
-    test('countriesForTimezone resolves shared zones', () async {
+    test('countriesForTimezone resolves shared zones in file order', () async {
       expect(await zoneTab.countriesForTimezone('Europe/Zurich'), [
         'CH',
         'DE',
         'LI',
+      ]);
+    });
+
+    test('countriesForTimezone preserves primary country even when not alpha-first', () async {
+      // Pacific/Auckland is "NZ,AQ" in the fixture — NZ is primary even though
+      // AQ is alphabetically earlier.
+      expect(await zoneTab.countriesForTimezone('Pacific/Auckland'), [
+        'NZ',
+        'AQ',
       ]);
     });
 

@@ -13,6 +13,7 @@ class ZoneTab {
 
   Map<String, String>? _countries;
   Map<String, List<String>>? _countryTimezones;
+  Map<String, List<String>>? _timezoneCountries;
 
   /// ISO 3166-1 alpha-2 code to human-readable country name.
   Future<Map<String, String>> getCountries() async {
@@ -42,7 +43,27 @@ class ZoneTab {
   /// falls back to `zone.tab`.
   Future<Map<String, List<String>>> getCountryTimezones() async {
     if (_countryTimezones != null) return _countryTimezones!;
+    await _parseZoneTab();
+    return _countryTimezones!;
+  }
 
+  /// Timezones for a single country code (case-insensitive). Returns an empty
+  /// list when the code is unknown.
+  Future<List<String>> timezonesForCountry(String countryCode) async {
+    final map = await getCountryTimezones();
+    return map[countryCode.toUpperCase()] ?? const <String>[];
+  }
+
+  /// ISO codes whose timezone list contains [timezone], preserving the order
+  /// declared in `zone1970.tab`: the primary country (most-populous) comes
+  /// first, with any secondary countries listed after in their original order.
+  /// Returns an empty list when the timezone is unknown.
+  Future<List<String>> countriesForTimezone(String timezone) async {
+    if (_timezoneCountries == null) await _parseZoneTab();
+    return _timezoneCountries![timezone] ?? const <String>[];
+  }
+
+  Future<void> _parseZoneTab() async {
     final zone1970 = File('$_zoneinfoDir/zone1970.tab');
     final zone = File('$_zoneinfoDir/zone.tab');
 
@@ -55,7 +76,9 @@ class ZoneTab {
       throw FileSystemException('tzdata not installed', zone1970.path);
     }
 
-    final result = <String, List<String>>{};
+    final countryToZones = <String, List<String>>{};
+    final zoneToCountries = <String, List<String>>{};
+
     for (final line in await source.readAsLines()) {
       if (line.isEmpty || line.startsWith('#')) continue;
       final parts = line.split('\t');
@@ -63,39 +86,25 @@ class ZoneTab {
       final codes = parts[0].split(',');
       final tz = parts[2].trim();
       if (tz.isEmpty) continue;
+      final orderedCodes = <String>[];
       for (final raw in codes) {
         final code = raw.trim().toUpperCase();
         if (code.isEmpty) continue;
-        (result[code] ??= <String>[]).add(tz);
+        (countryToZones[code] ??= <String>[]).add(tz);
+        orderedCodes.add(code);
       }
+      if (orderedCodes.isNotEmpty) zoneToCountries[tz] = orderedCodes;
     }
 
-    for (final list in result.values) {
+    for (final list in countryToZones.values) {
       list.sort();
     }
 
-    return _countryTimezones = Map<String, List<String>>.unmodifiable({
-      for (final entry in result.entries) entry.key: List<String>.unmodifiable(entry.value),
+    _countryTimezones = Map<String, List<String>>.unmodifiable({
+      for (final entry in countryToZones.entries) entry.key: List<String>.unmodifiable(entry.value),
     });
-  }
-
-  /// Timezones for a single country code (case-insensitive). Returns an empty
-  /// list when the code is unknown.
-  Future<List<String>> timezonesForCountry(String countryCode) async {
-    final map = await getCountryTimezones();
-    return map[countryCode.toUpperCase()] ?? const <String>[];
-  }
-
-  /// ISO codes whose timezone list contains [timezone]. Useful for
-  /// pre-selecting a country from the current system timezone. Returns an
-  /// empty list when the timezone is unknown.
-  Future<List<String>> countriesForTimezone(String timezone) async {
-    final map = await getCountryTimezones();
-    final matches = <String>[];
-    for (final entry in map.entries) {
-      if (entry.value.contains(timezone)) matches.add(entry.key);
-    }
-    matches.sort();
-    return matches;
+    _timezoneCountries = Map<String, List<String>>.unmodifiable({
+      for (final entry in zoneToCountries.entries) entry.key: List<String>.unmodifiable(entry.value),
+    });
   }
 }

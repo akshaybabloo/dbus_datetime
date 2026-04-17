@@ -1,3 +1,7 @@
+## 0.1.1
+
+- `ZoneTab.countriesForTimezone` now returns countries in the order declared in `zone1970.tab`, so the primary (most-populous) country is first. Earlier versions sorted alphabetically, which picked the wrong country for zones whose primary is not alphabetically first (e.g. `Pacific/Auckland` maps to `NZ,AQ` and should report NZ first, not AQ).
+
 ## 0.1.0
 
 - Added `ZoneTab` for offline country and IANA timezone lookup backed by `/usr/share/zoneinfo/zone1970.tab` (with a `zone.tab` fallback) and `iso3166.tab`. systemd-timedated does not expose country metadata over D-Bus, so this fills the gap for country-picker UIs.
