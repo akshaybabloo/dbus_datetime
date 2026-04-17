@@ -5,7 +5,7 @@
 # 3. TZ
 # 4. Comment (optional)
 CH,DE,LI	+4723+00832	Europe/Zurich	Büsingen
-NZ	-3652+17446	Pacific/Auckland	most of NZ
+NZ,AQ	-3652+17446	Pacific/Auckland	most of NZ
 NZ	-4357-17633	Pacific/Chatham	Chatham Islands
 US	+404251-0740023	America/New_York	Eastern (most areas)
 US	+340308-1181434	America/Los_Angeles	Pacific
