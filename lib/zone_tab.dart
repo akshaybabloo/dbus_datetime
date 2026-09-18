@@ -7,7 +7,8 @@ import 'dart:io';
 /// `zone1970.tab` (or `zone.tab` as a fallback) and `iso3166.tab` from the
 /// zoneinfo directory. Results are cached per instance after the first read.
 class ZoneTab {
-  ZoneTab({String zoneinfoDir = '/usr/share/zoneinfo'}) : _zoneinfoDir = zoneinfoDir;
+  ZoneTab({String zoneinfoDir = '/usr/share/zoneinfo'})
+    : _zoneinfoDir = zoneinfoDir;
 
   final String _zoneinfoDir;
 
@@ -101,10 +102,12 @@ class ZoneTab {
     }
 
     _countryTimezones = Map<String, List<String>>.unmodifiable({
-      for (final entry in countryToZones.entries) entry.key: List<String>.unmodifiable(entry.value),
+      for (final entry in countryToZones.entries)
+        entry.key: List<String>.unmodifiable(entry.value),
     });
     _timezoneCountries = Map<String, List<String>>.unmodifiable({
-      for (final entry in zoneToCountries.entries) entry.key: List<String>.unmodifiable(entry.value),
+      for (final entry in zoneToCountries.entries)
+        entry.key: List<String>.unmodifiable(entry.value),
     });
   }
 }

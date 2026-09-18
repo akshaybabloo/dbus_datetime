@@ -2,6 +2,7 @@
 // dart-dbus generate-remote-object ./interfaces/org.freedesktop.timesync1.xml
 
 import 'dart:io';
+
 import 'package:dbus/dbus.dart';
 
 class OrgFreedesktopTimesync1 extends DBusRemoteObject {
