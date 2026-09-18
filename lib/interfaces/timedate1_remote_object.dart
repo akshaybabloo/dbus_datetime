@@ -2,6 +2,7 @@
 // dart-dbus generate-remote-object ./interfaces/org.freedesktop.timedate1.xml
 
 import 'dart:io';
+
 import 'package:dbus/dbus.dart';
 
 class OrgFreedesktopTimedate1 extends DBusRemoteObject {
